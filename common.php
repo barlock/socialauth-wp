@@ -4,7 +4,7 @@ if(!file_exists( dirname(__FILE__) . '/hybridauth/Hybrid/Auth.php')) {
     die( sprintf( __( "Sorry, but you can not install Plugin 'SocialAuth-WP'. It seems you missed to add 'hybrid auth' library with this plugin.") ));
 }
 define('SOCIALAUTH_WP_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define(SOCIALAUTH_WP_HYBRIDAUTH_DIR_PATH, SOCIALAUTH_WP_PLUGIN_PATH . '/hybridauth/');
+define('SOCIALAUTH_WP_HYBRIDAUTH_DIR_PATH', SOCIALAUTH_WP_PLUGIN_PATH . '/hybridauth/');
 
 $HA_PROVIDER_CONFIG = array();
 $HA_CONFIG = get_ha_config();
