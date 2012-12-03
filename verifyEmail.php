@@ -56,8 +56,8 @@ else
 </head>
 <body>
 <div class="SocialAuth_WP">
-    <p>Oops !!! It seems you will need to verify your email with us before you can get in. This is one time process and site administrator has enbaled this to avoid spamming of accounts.</p>
-    <p>An e-mail has already been sent your email address (from your profile with the provider which you just used to connect). Please validate your email and come back here to login.</p>
+    <p>Oops !!! It seems you will need to verify your email with us before you can get in. This is one time process and site administrator has enabled this to avoid spamming of accounts.</p>
+    <p>An e-mail has already been sent to your email address (from your profile with the provider which you just used to connect). Please validate your email and come back here to login.</p>
     <a class="button" href="<?php echo $url; ?>" ><span>Continue</span></a> 
 </div>
 </body>
