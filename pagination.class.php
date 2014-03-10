@@ -47,7 +47,7 @@
      * Constructor
      * 
      * @param array $array   Array of results to be paginated
-     * @param int   $curPage The current page interger that should used
+     * @param int   $curPage The current page integer that should used
      * @param int   $perPage The amount of items that should be show per page
      * @return void    
      * @access public  
@@ -108,11 +108,11 @@
     }
 
     /**
-     * Set the main seperator character
+     * Set the main separator character
      * 
      * By default this will implode an empty string
      * 
-     * @param string $mainSeperator The seperator between the page numbers
+     * @param string $mainSeparator The separator between the page numbers
      * @return void    
      * @access public  
      */

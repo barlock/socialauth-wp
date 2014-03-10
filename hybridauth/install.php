@@ -1,3 +1,9 @@
+<?php
+	$HYBRIDAUTH_VERSION = "2.1.1-dev";
+?><html> 
+<head>
+<title>HybridAuth Installer</title>
+<meta name="robots" content="NOINDEX, NOFOLLOW">  
 <style type="text/css">
 #content {
     background: none repeat scroll 0 0 #FFFFFF; 
@@ -69,8 +75,9 @@ ul li label {
    padding-top: 1px;
 } 
 </style> 
-<?php
-	$HYBRIDAUTH_VERSION             = "2.0.11";
+</head>
+<body>
+<?php 
 	$CONFIG_TEMPLATE                = "";
 
    /**
@@ -80,7 +87,8 @@ ul li label {
 	{
 		if(
 			isset( $_SERVER['HTTPS'] ) && ( $_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1 )
-		|| 	isset( $_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
+            || 	isset( $_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
+            || 	isset( $_SERVER['HTTP__WSSC']) && $_SERVER['HTTP__WSSC'] == 'https'
 		){
 			$protocol = 'https://';
 		}
@@ -90,13 +98,14 @@ ul li label {
 
 		$url = $protocol . $_SERVER['HTTP_HOST'];
 
-		// use port if non default
-		$url .= 
-			isset( $_SERVER['SERVER_PORT'] ) 
-			&&( ($protocol === 'http://' && $_SERVER['SERVER_PORT'] != 80) || ($protocol === 'https://' && $_SERVER['SERVER_PORT'] != 443) )
-			? ':' . $_SERVER['SERVER_PORT'] 
-			: ''
-;
+        // use port if non default
+        if( isset( $_SERVER['SERVER_PORT'] )
+            && $_SERVER['SERVER_PORT'] != 80
+            && $_SERVER['SERVER_PORT'] != 443)
+        {
+            $url .= ':' . $_SERVER['SERVER_PORT'];
+        }
+
 		$url .= $_SERVER['PHP_SELF'];
 
 		// return current url
@@ -135,6 +144,14 @@ ul li label {
 								)
 								,
 								ARRAY( 
+									"label"             => "Yahoo",
+									"provider_name"     => "Yahoo!", 
+									"require_client_id" => TRUE, 
+									"new_app_link"      => "https://developer.apps.yahoo.com/dashboard/createKey.html",
+									"userguide_section" => "http://hybridauth.sourceforge.net/userguide/IDProvider_info_Yahoo.html",
+								)
+								,
+								ARRAY( 
 									"label"             => "Live",
 									"provider_name"     => "Windows Live", 
 									"require_client_id" => TRUE, 
@@ -170,13 +187,6 @@ ul li label {
 									"provider_name"     => "OpenID", 
 									"new_app_link"      => NULL,
 									"userguide_section" => "http://hybridauth.sourceforge.net/userguide/IDProvider_info_OpenID.html",
-								)
-								,
-								ARRAY( 
-									"label"             => "Yahoo",
-									"provider_name"     => "Yahoo!", 
-									"new_app_link"      => NULL,
-									"userguide_section" => "http://hybridauth.sourceforge.net/userguide/IDProvider_info_Yahoo.html",
 								)
 								,
 								ARRAY( 
@@ -381,25 +391,29 @@ ul li label {
 					<?php endif; ?> 
 
 					<?php if ( $provider == "MySpace" ) : ?>
-						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Put your website domain in the <b>External Url</b> and <b>External Callback Validation</b> fields. This should match with the current hostname <em style="color:#CB4B16;"><?php echo $_SERVER["SERVER_NAME"] ?></em>.</p>
+						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Put your website domain in the <b>External Url</b> and <b>External Callback Validation</b> fields. It should match with the current hostname <em style="color:#CB4B16;"><?php echo $_SERVER["SERVER_NAME"] ?></em>.</p>
 					<?php endif; ?> 
 
 					<?php if ( $provider == "Live" ) : ?>
-						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Put your website domain in the <b>Redirect Domain</b> field. This should match with the current hostname <em style="color:#CB4B16;"><?php echo $_SERVER["SERVER_NAME"] ?></em>.</p>
+						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Put your website domain in the <b>Redirect Domain</b> field. It should match with the current hostname <em style="color:#CB4B16;"><?php echo $_SERVER["SERVER_NAME"] ?></em>.</p>
 					<?php endif; ?> 
 
 					<?php if ( $provider == "Facebook" ) : ?>
-						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Put your website domain in the <b>Site Url</b> field. This should match with the current hostname <em style="color:#CB4B16;"><?php echo $_SERVER["SERVER_NAME"] ?></em>.</p> 
+						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Put your website domain in the <b>Site Url</b> field. It should match with the current hostname <em style="color:#CB4B16;"><?php echo $_SERVER["SERVER_NAME"] ?></em>.</p> 
 					<?php endif; ?>	
 
 					<?php if ( $provider == "LinkedIn" ) : ?>
-						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Put your website domain in the <b>Integration URL</b> field. This should match with the current hostname <em style="color:#CB4B16;"><?php echo $_SERVER["SERVER_NAME"] ?></em>.</p> 
+						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Put your website domain in the <b>Integration URL</b> field. It should match with the current hostname <em style="color:#CB4B16;"><?php echo $_SERVER["SERVER_NAME"] ?></em>.</p> 
 						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Set the <b>Application Type</b> to <em style="color:#CB4B16;">Web Application</em>.</p> 
 					<?php endif; ?>	
 
+					<?php if ( $provider == "Yahoo" ) : ?>
+						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Put your website domain in the <b>Application URL</b> and <b>Application Domain</b> fields. It should match with the current hostname <em style="color:#CB4B16;"><?php echo $_SERVER["SERVER_NAME"] ?></em>.</p> 
+						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Set the <b>Kind of Application</b> to <em style="color:#CB4B16;">Web-based</em>.</p> 
+					<?php endif; ?>	
+
 					<?php if ( $provider == "Twitter" ) : ?>
-						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Put your website domain in the <b>Application Website</b> and <b>Application Callback URL</b> fields. This should match with the current hostname <em style="color:#CB4B16;"><?php echo $_SERVER["SERVER_NAME"] ?></em>.</p> 
-						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Set the <b>Application Type</b> to <em style="color:#CB4B16;">Browser</em>.</p> 
+						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Put your website domain in the <b>Application Website</b> and <b>Application Callback URL</b> fields. It should match with the current hostname <em style="color:#CB4B16;"><?php echo $_SERVER["SERVER_NAME"] ?></em>.</p> 
 						<p><?php echo "<b>" . ++$setupsteps . "</b>." ?> Set the <b>Default Access Type</b> to <em style="color:#CB4B16;">Read, Write, & Direct Messages</em>.</p> 
 					<?php endif; ?>	
 					
@@ -407,8 +421,6 @@ ul li label {
 				<?php else: ?>	
 					<p>No registration required for OpenID based providers</p> 
 				<?php endif; ?> 
-				
-				For more informations check out <a href="<?php echo $provider_userguide_section ?>" target ="_blanck"><?php echo $provider ?> adapter specifications</a> section on the online userguide. 
 		   </div>
 		</div>   
 	</div> 
@@ -434,14 +446,5 @@ ul li label {
 
 </div>
 
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-11037160-1");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<script type="text/javascript"> var sc_project=7312365; var sc_invisible=1; var sc_security="30da00f3"; </script>
-<script type="text/javascript" src="http://www.statcounter.com/counter/counter.js"></script> 
+</body>
+</html>

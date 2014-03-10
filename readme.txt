@@ -1,24 +1,31 @@
 === Socialauth-WordPress ===
 Contributors: labs@3pillarglobal.com
 Donate link: http://www.3pillarglobal.com
-Tags: socialauth wordpress, social login integration, hybridauth, authentication, contacts, friendlist, providers
+Tags: socialauth wordpress, social login integration, hybridauth, authentication, contacts, friendlist, providers, openid, providers
 Requires at least: 3.0.0
 Tested up to: 3.4.2
-Stable tag: 1.5.5
+Stable tag: 3.11.13
 License: MIT License
 License URI: http://www.opensource.org/licenses/MIT
 
-SocialAuth-WordPress a Wordpress 3.0+ plugin which enables social login integration and other services through different providers (eg. Facebook, Twitter).
+SocialAuth-WordPress a WordPress 3.0+ plugin which enables social login integration through different providers (eg. Facebook, Twitter).
 
 == Description ==
 
-SocialAuth-WordPress a Wordpress 3.0+ plugin derived from popular PHP based HybridAuth library. Inspired from other Wordpress social login plugins, this plugin seamlessly integrates into any Wordpress 3.0+ application and enables social login integration through different service providers. All you have to do is to configure the plugin from settings page before you can start using it. SocialAuth-WordPress hides all the intricacies of generating signatures and token, doing security handshakes and provides an out of the box a simple solution to interact with providers.
+SocialAuth-WordPress a WordPress 3.0+ plugin derived from popular PHP based HybridAuth library. Inspired from other WordPress social login plugins, this plugin seamlessly integrates into any WordPress 3.0+ application and enables social login integration through different service providers. All you have to do is to configure the plugin from settings page before you can start using it. SocialAuth-WordPress hides all the intricacies of generating signatures and token, doing security handshakes and provides an out of the box a simple solution to interact with providers.
 
-[Click Here](http://socialauth.in/wordpress/wp-login.php) to see Socialauth-WordPress in action.
+[Click Here](http://labs.3pillarglobal.com/socialauth-wp-demo/wp-login.php) to see Socialauth-WordPress in action.
 
 Please check out [Developer Notes](http://wordpress.org/extend/plugins/socialauth-wp/other_notes/) for more information on this plugin.
 
-You can also check [socialauth.in](http://socialauth.in) to get similar libraries in other technologies under SocialAuth umbrella.
+You can also check [labs.3pillarglobal.com](http://labs.3pillarglobal.com/) to get similar libraries in other technologies under SocialAuth umbrella.
+
+What's new in latest release?
+
+*  Introduced plugin short code [SocialAuth-WP-Short-Code]. Use in pages/posts.
+*  If new registrations are disabled, new users can not login to your WordPress site.
+*  New option in plugin settings to hide 'My Contacts' option from left navigation bar of dashboard.
+*  Post login redirect capability to get user back to the page from where you initiated login process.
 
 == Installation ==
 
@@ -56,6 +63,24 @@ Once you have downloaded and enabled the plugin, you need to go to the settings 
 
 == Changelog ==
 
+= 3.11.13 =
+* Introduced short code [SocialAuth-WP-Short-Code] to get social-auth-wp working from pages and posts along with login page.
+* Added compliance for registrations settings; if registration is disabled new users can not login to your WordPress site.
+* Added a new option to settings to hide 'My Contacts' option if you do not need that.
+* Introduced post login redirect capability to get back to page from where you initiated login process.
+* Started to use user's first name when username not available from login provider, this will fallback to user profile identifier if first-name and username both are not available.
+* Added link for 'Back to Login' (close pop up window) when authentication fails and user is prompted with error message.
+* Other minor improvements for consistency and user friendly interface
+* Added some ground work to satisfy AOL openID authentication using XRDS document.
+
+= 2.7.11 =
+* Upgraded HybridAuth library to 2.1.1
+* Added an option to admin-settings to not to show complete logout warning on logout.
+* Added Curl-SSL support check to requirements.
+* Fixed Twitter multiple profiles issue.
+* User is automatically logged in after email verification.
+* Some minor changes to messages and code quality.
+
 = 1.5.5 =
 * Added admin controlled email verification for new users. This is quite useful where login provider do no validate user e-mail, enabling this will allow only users with active email account to register with you WordPress site.
 * Added an option in admin-settings to enable showing on login provider icons on comment and registration page, this is will help users to directly logon from there without going to login page.
@@ -78,6 +103,12 @@ Once you have downloaded and enabled the plugin, you need to go to the settings 
 
 == Upgrade Notice ==
 
+= 3.11.13 =
+There has been addition of 4 new features and 3 bug fixes since last release. Update to get latest and enjoy more features.
+
+= 2.7.11 =
+There has been addition of 3 new features and 5 bug fixes since last release. Update to get latest and enjoy more features.
+
 = 1.5.5 =
 There has been addition of 2 new features and 3 bug fixes since last release. Update to get latest and enjoy more features.
 
@@ -92,7 +123,7 @@ There has been 1 bug fix since last release. Update to get latest.
 
 == Live Demo ==
 
-See the [live demo](http://socialauth.in/wordpress/wp-login.php) now!
+See the [live demo](http://labs.3pillarglobal.com/socialauth-wp-demo/wp-login.php) now!
 
 == Features == 
 
@@ -118,4 +149,10 @@ See the [live demo](http://socialauth.in/wordpress/wp-login.php) now!
 * When registering with Logon provider to get app_key and app_secret, some case you require you to supply a redirect_uri; you can get that from settings page.
 * Administrator can also control how logon prompts appear to users. It can be either on same window or a pop up window.
 * Administrator can control showing on login provider icons on comment and registration page, this is will help users to directly logon from there without going to login page.
-* Administrator can enable optional e-mail verification for new users to force email verification when a new user first time comes to your site.
+* Administrator can enable optional e-mail verification for new users to force email verification when a new user first time comes to your site. This will only applied to users coming through providers which do not share user email in open-auth/social-auth
+* Administrator can control whether or not to show complete session end message on logout or not.
+
+== Credits ==
+
+* HybridAuth Library - A open source social sign on php library residing in core of plugin and providing interface to connect to various login providers.
+* A lot many thanks to Viruthagiri Thirumavalavan (one of most active plugin users) for using, raising bugs and suggesting enhancements to make this plugin better. 

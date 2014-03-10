@@ -153,4 +153,7 @@ function my_plugin_menu() {
     add_menu_page('My Contacts', 'My Contacts', 'read', 'SocialAuth-WP-contacts', 'SocialAuth_WP_contacts', $images_url . 'friends.jpg');
 }
 
-add_action('admin_menu', 'my_plugin_menu');
+$hideMyContacts = get_option('SocialAuth_WP_hide_my_contacts');
+
+if(empty($hideMyContacts) || $hideMyContacts !='hide')
+    add_action('admin_menu', 'my_plugin_menu');

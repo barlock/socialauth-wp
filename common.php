@@ -35,20 +35,57 @@ function sendEmailVerificationEmail($to, $user_id, $emailVerificationHash, $subj
 	$attachments = "";
 	
 	include_once dirname(__FILE__) . "/email_verification_template.php";
-	
 	wp_mail( $to, $subject, $message, $headers, $attachments );
 }
 
 function endAuthProcessAndRedirectToHomePage($user_home_page)
 {
 	$authDialogPosition = get_option('SocialAuth_WP_authDialog_location');
-	if(!empty($authDialogPosition) && $authDialogPosition == 'page')
-	{
-		header('Location: ' . $user_home_page); die;
-	}else {
-		echo "<script type='text/javascript'>
-                opener.location.href = '" . $user_home_page ."';
+    if(!empty($authDialogPosition) && $authDialogPosition == 'page')
+    {
+        //Get to see if a redirect_uri is set or not?
+        $query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
+        parse_str($query, $params);
+        if(isset($params['redirect_to']))
+        {    $user_home_page = urldecode($params['redirect_to']);
+        }
+
+        header('Location: ' . $user_home_page); die;
+    }else {
+        echo '<script type="text/javascript">
+
+            function gup( name ){
+name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+var regexS = "[\\?&]"+name+"=([^&#]*)";
+var regex = new RegExp( regexS );
+var results = regex.exec( opener.location.href );
+ if( results == null )    return results;
+else    return decodeURIComponent(results[1]);}
+
+    var frank_param = gup("redirect_to");
+            if(frank_param == null)
+                //Check if user is any other page than login, redirect back to same page.
+
+                opener.location.href = "' . $user_home_page .'";
+            else
+                opener.location.href = frank_param;
                 close();
-                </script>";
+                </script>';
+    }
+}
+
+
+function validateInteger($string, $required = false)
+{
+	$validationRegEx = "\d";
+
+	if($required)
+	{
+		$validationRegEx .= "+";
 	}
+	else
+	{
+		$validationRegEx .= "*";
+	}
+	return preg_match('/^' .  $validationRegEx .'$/',$string)? true: false;
 }

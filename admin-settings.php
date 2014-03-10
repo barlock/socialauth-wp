@@ -34,6 +34,8 @@ function SocialAuth_WP_register_settings() {
     register_setting( 'SocialAuth-WP-settings', 'SocialAuth_WP_profile_picture_source');
     register_setting( 'SocialAuth-WP-settings', 'SocialAuth_WP_providerIcons_host_pages');
     register_setting( 'SocialAuth-WP-settings', 'SocialAuth_WP_validate_newUser_email');
+    register_setting( 'SocialAuth-WP-settings', 'SocialAuth_WP_skip_logout_warning');
+    register_setting( 'SocialAuth-WP-settings', 'SocialAuth_WP_hide_my_contacts');
 }
 
 function SocialAuth_WP_scripts()
@@ -201,7 +203,29 @@ function SocialAuth_WP_render_settings_page(){
                     <td>
                         <?php $isChecked = (!empty($validateEmail) && ($validateEmail == 'validate'))? "checked='checked'": ""; ?>
                         <input type="checkbox" name="SocialAuth_WP_validate_newUser_email" value="validate" <?php echo $isChecked;?> /> Yes, force user for email validation
-                        <span class="description">This will add an another step of email validation for new users before they can get in.</span>
+                        <span class="description">An extra step of email verification will be added to authentication process, if login provider user is is trying to authenticate with doesn't share user's email addess. This setting will not force email verification to users where login provider is sharing email of user as part of user profile; we are leaving email verification to login provider for this case.</span>
+                    </td>
+                </tr>
+                <tr valign="top">
+                	<?php 
+                		$notShowLogoutWarning = get_option('SocialAuth_WP_skip_logout_warning');
+                	?>
+                    <th scope="row"><label for ="SocialAuth_WP_skip_logout_warning" ><?php _e("Logout Warning", 'SocialAuth_WP'); ?></label></th>
+                    <td>
+                        <?php $isChecked = (!empty($notShowLogoutWarning) && ($notShowLogoutWarning == 'doNotShow'))? "checked='checked'": ""; ?>
+                        <input type="checkbox" name="SocialAuth_WP_skip_logout_warning" value="doNotShow" <?php echo $isChecked;?> /> Do not show session warning on logout.
+                        <span class="description">If this is enabled user will no longer see warning message on logout which advises user to logout from login provider as well to completely end session.</span>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <?php
+                    $hideMyContacts = get_option('SocialAuth_WP_hide_my_contacts');
+                    ?>
+                    <th scope="row"><label for ="SocialAuth_WP_hide_my_contacts" ><?php _e("Hide My Contacts menu", 'SocialAuth_WP'); ?></label></th>
+                    <td>
+                        <?php $isChecked = (!empty($hideMyContacts) && ($hideMyContacts == 'hide'))? "checked='checked'": ""; ?>
+                        <input type="checkbox" name="SocialAuth_WP_hide_my_contacts" value="hide" <?php echo $isChecked;?> /> Yes, hide this menu
+                        <span class="description">This is to allow you to not to show 'My Contacts' page to users connecting to your site by Social Authentication. Leave this blank if you want 'My Contact' menu visible.</span>
                     </td>
                 </tr>
             </table>
@@ -221,7 +245,7 @@ function SocialAuth_WP_render_settings_page(){
                                 <p><label><input type="radio" <?php echo (!isset($SocialAuth_WP_providers[$provider]['enabled']) || ($SocialAuth_WP_providers[$provider]['enabled'] == 0))? 'checked=\'checked\'' : ''; ?> class="SocialAuth_WP_adaptor_status" value="0" name="SocialAuth_WP_providers[<?php echo $provider ?>][enabled]">Disabled</label></p>
                                 <p><label><input type="radio" <?php echo (isset($SocialAuth_WP_providers[$provider]['enabled']) && ($SocialAuth_WP_providers[$provider]['enabled'] == 1))? 'checked=\'checked\'' : ''; ?> class="SocialAuth_WP_adaptor_status" value="1" name="SocialAuth_WP_providers[<?php echo $provider ?>][enabled]">Enabled</label></p>
                                 <ul>
-                                    
+
                                     <?php if(isset($settings['keys']) && is_array($settings['keys']) && isset($settings['keys']['id'])) {?>
                                         <li>
                                             <label for="">
@@ -233,6 +257,14 @@ function SocialAuth_WP_render_settings_page(){
                                             <label for ="SocialAuth_WP_providers[<?php echo $provider; ?>][keys][id]" >
                                                  <?php _e('App ID:', 'new_auth'); ?>
                                                  <input class="regular-text" type="text" name="SocialAuth_WP_providers[<?php echo $provider; ?>][keys][id]" value="<?php echo isset($SocialAuth_WP_providers[$provider]['keys']['id'])? $SocialAuth_WP_providers[$provider]['keys']['id'] : ""; ?>" />
+                                            </label>
+                                        </li>
+                                    <?php } ?>
+                                    <?php if(isset($settings['keys']) && is_array($settings['keys']) && isset($settings['keys']['url'])) {?>
+                                        <li>
+                                            <label for ="SocialAuth_WP_providers[<?php echo $provider; ?>][keys][key]" >
+                                                <?php _e('Url:', 'new_auth'); ?>
+                                                <input class="regular-text" type="text" name="SocialAuth_WP_providers[<?php echo $provider; ?>][keys][url]" value="<?php echo isset($SocialAuth_WP_providers[$provider]['keys']['url'])? $SocialAuth_WP_providers[$provider]['keys']['url'] : "https://openid.stackexchange.com"; ?>" />
                                             </label>
                                         </li>
                                     <?php } ?>

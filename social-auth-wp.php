@@ -2,10 +2,10 @@
 /*
 Plugin Name: SocialAuth-WordPress
 Plugin URI: http://wordpress.org/extend/plugins/socialauth-wp/
-Description: SocialAuth-WordPress is a Wordpress 3.0+ plugin derived from popular PHP based HybridAuth library. Inspired from other Wordpress social login plugins, this plugin seamlessly integrates into any Wordpress 3.0+ application and enables social login integration through different service providers. All you have to do is to configure the plugin from settings page before you can start using it. SocialAuth-WP hides all the intricacies of generating signatures and token, doing security handshakes and provides an out of the box a simple solution to interact with providers.
-Version: 1.5.5
+Description: SocialAuth-WordPress is a WordPress 3.0+ plugin derived from popular PHP based HybridAuth library. Inspired from other Wordpress social login plugins, this plugin seamlessly integrates into any WordPress 3.0+ application and enables social login integration through different service providers. All you have to do is to configure the plugin from settings page before you can start using it. SocialAuth-WP hides all the intricacies of generating signatures and token, doing security handshakes and provides an out of the box a simple solution to interact with providers.
+Version: 3.11.13
 Author: labs@3pillarglobal.com
-Author URI: http://socialauth.in/wordpress
+Author URI: http://labs.3pillarglobal.com/
 License: MIT License
 */
 
@@ -55,8 +55,8 @@ function SocialAuth_WP_install() {
     do_action( 'SocialAuth_WP_installation' );
 }
 
-/* Action Called eveytime worpress is loaded. 
- * You can add any specific aciotn message here related to plugin 
+/* Action Called every time wordpress is loaded.
+ * You can add any specific action message here related to plugin
  * */
 function SocialAuth_WP() {
 
@@ -74,20 +74,49 @@ function social_auth_wordpress_get_avatar($avatar, $id_or_email, $size, $default
 		$profileImageUrl = get_user_meta( $user_id, 'profile_image_url', true );
 		if(!empty($profileImageUrl))
 		{
-			$avatar = "<img src='".$profileImageUrl."' alt='".$alt."' height='".$size."' width='".$size."' />";
+			$avatar = "<img class='avatar avatar-64 photo' src='".$profileImageUrl."' alt='".$alt."' height='".$size."' width='".$size."' style='width:". $size ."px;' />";
 		}
 	}
 	return $avatar;
 }
 
-/* Action Called eveytime plugin is un-installed.
-* You can add any specif aciotn message here related to plugin un-installation
+/* Action Called every time plugin is un-installed.
+* You can add any specif action message here related to plugin un-installation
 * */
 function SocialAuth_WP_remove() {}
 
-/* Overide actual wordpress URL to show custom logout page */
+/* cURL Requirements check */
+function SocialAuth_WP_req_check() {
+	if(!function_exists('curl_init')){
+		echo '<div class="error"><p>';
+		echo 'cURL library cannot be found. Make sure it is installed. Otherwise SocialAuth-WordPress will not work properly.';
+		echo '</p></div>';
+		exit;
+	}
+	$agent = "Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.4) Gecko/20030624 Netscape/7.1 (ax)";
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL,"https://www.google.com/");
+	curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+	$returned=curl_exec ($ch);
+	if($returned==null){
+		echo '<div class="error"><p>';
+		echo 'Your cURL does not allow https protocol. Make sure OpenSSL is installed. Otherwise SocialAuth-WordPress will not work properly.';
+		echo '</p></div>';
+	}
+	curl_close ($ch);
+}
+
+/* Override actual wordpress URL to show custom logout page */
 function new_logout_url($a) {
-    return plugin_dir_url(__FILE__) . 'logout.php?redirect_to=' . urlencode($a);
+	$hideLogoutWarning = get_option('SocialAuth_WP_skip_logout_warning');
+	if(!empty($hideLogoutWarning) && $hideLogoutWarning == "doNotShow")
+		return $a;
+	else
+    	return plugin_dir_url(__FILE__) . 'logout.php?redirect_to=' . urlencode($a);
 }
 
 //Helps in login, to fetch user details to compare new user with existing one(s)
@@ -97,27 +126,15 @@ function get_user_by_meta( $meta_key, $meta_value ) {
     return $wpdb->get_var( $wpdb->prepare( $sql, $meta_key, $meta_value ) );
 }
 
-/* cURL Requirements check */
-function SocialAuth_WP_req_check() {
-if(!function_exists('curl_init')){
-echo '<div class="error"><p>';
-echo 'cURL library cannot be found. Make sure it is installed. Otherwise SocialAuth-WordPress will not work properly.';
-echo '</p></div>';
-exit;
+//Short Code for this plugin
+function social_auth_wp_short_code() {
+    sc_render_login_form_SocialAuth_WP();
 }
-$agent = "Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.4) Gecko/20030624 Netscape/7.1 (ax)";
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL,"https://www.google.com/");
-curl_setopt($ch, CURLOPT_USERAGENT, $agent);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-$returned=curl_exec ($ch);
-if($returned==null){
-echo '<div class="error"><p>';
-echo 'Your cURL does not allow https protocol. Make sure OpenSSL is installed. Otherwise SocialAuth-WordPress will not work properly.';
-echo '</p></div>';
+add_shortcode('SocialAuth-WP-Short-Code', 'social_auth_wp_short_code');
+
+//Add meta tag to advertise xrds document
+function publish_xrds()
+{
+    echo '<meta http-equiv="X-XRDS-Location" content="'. plugin_dir_url(__FILE__) .'hybridauth/index.php?get=openid_xrds'  .'" />';
 }
-curl_close ($ch);
-}
+add_action('wp_head', 'publish_xrds');
