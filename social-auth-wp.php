@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: SocialAuth-WordPress
-Plugin URI: http://wordpress.org/extend/plugins/socialauth-wp/
-Description: SocialAuth-WordPress is a WordPress 3.0+ plugin derived from popular PHP based HybridAuth library. Inspired from other Wordpress social login plugins, this plugin seamlessly integrates into any WordPress 3.0+ application and enables social login integration through different service providers. All you have to do is to configure the plugin from settings page before you can start using it. SocialAuth-WP hides all the intricacies of generating signatures and token, doing security handshakes and provides an out of the box a simple solution to interact with providers.
+Plugin URI: https://github.com/mbarlock/socialauth-wp
+Description: This plugin is a hold over until we can get all the code merged to use this plugin naturally instead of our own version
 Version: 3.11.13
 Author: labs@3pillarglobal.com
 Author URI: http://labs.3pillarglobal.com/
