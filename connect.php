@@ -80,7 +80,7 @@ if( isset( $_GET["provider"] ) ){
             //Lets' check if new user creation is allowed or not?
             $users_can_register = get_option('users_can_register');
             if(empty($users_can_register) || $users_can_register == 0)
-                throw new Exception("You do not have an account created on this site.  Please contact the Site Administrator.", 701);
+                throw new Exception("You do not have an account created on this site. Please contact the Site Administrator.", 701);
 
             $displayNameArray = explode(" ", $ha_user_profile->displayName);
 
